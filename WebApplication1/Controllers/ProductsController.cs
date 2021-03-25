@@ -13,19 +13,46 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+    
     public class ProductsController : ControllerBase
     {
+        //IOC Container---Inversion of Control
         IProductService _productService;
         public ProductsController(IProductService productService)
         {
             _productService = productService;
         }
-        [HttpGet]
-        public List<Product> Get()
+        [HttpGet("getall")]
+        public IActionResult GetAll()
         {
             var result=_productService.GetAll();
-            return result.Data;
+            if (result.Succes)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
             
+        }
+        [HttpGet("getbyId")]
+        public IActionResult GetById(int id)
+        {
+            var result = _productService.GetById(id);
+            if (result.Succes==true)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpPost("add")]
+        public IActionResult Add(Product product)
+        {
+            var result = _productService.Add(product);
+            if (result.Succes==true)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }
